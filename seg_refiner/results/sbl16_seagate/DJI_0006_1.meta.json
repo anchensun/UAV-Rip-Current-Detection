@@ -1,0 +1,10 @@
+{
+  "video": "data/extracted/Rip Current Video/New Drone Videos/DJI_0006_1.mp4",
+  "mask": "script/Rip_Current-main/New_Rip_Mask/DJI_0006_1_mask.png",
+  "gt": "data/extracted/Rip Current Video/RipOutlinesSBL/SBL_GT/DJI_0006_1.png",
+  "algo": "HOR_HS",
+  "ckpt": "/home/anchensun/Anchen/Research/plos_one_rip_current/seg_refiner/checkpoints/best.pt",
+  "gate_mode": "sea",
+  "n_pairs": 600,
+  "wall_seconds": 312.0
+}

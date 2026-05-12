@@ -1,0 +1,7 @@
+{
+  "algo": "HOR_HS",
+  "best_auc": 0.6402,
+  "best_T": 150,
+  "best_alpha_OF": 1.0,
+  "wall_seconds": 349.3
+}

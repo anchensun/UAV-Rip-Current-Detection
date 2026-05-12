@@ -1,0 +1,13 @@
+{
+  "video": "data/DJI_0009.MOV",
+  "mask": "script/Rip_Current-main/New_Rip_Mask/Haulover_Miami_FL_mask.png",
+  "gt": "script/Rip_Current-main/rip_curent_evaluation/workspace/annotations/Haulover_Miami_FL_annotation.png",
+  "algo": "HOR_HS",
+  "yolo_ckpt": "/home/anchensun/Anchen/Research/Rip_Current/CVPR_RipCurrent/runs/segment/outputs/yolov8/e1_yolov8m_seg/weights/best.pt",
+  "ensemble": "mul",
+  "yolo_conf_min": 0.05,
+  "yolo_imgsz": 1024,
+  "yolo_only_auc_avg": 0.0,
+  "n_pairs": 600,
+  "wall_seconds": 400.0
+}

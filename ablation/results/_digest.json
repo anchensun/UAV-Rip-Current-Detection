@@ -1,0 +1,21 @@
+{
+  "framework_best_mean_T": {
+    "HOR_HS": 15,
+    "HOR_LK": 90,
+    "FARNEBACK": 15
+  },
+  "framework_best_median_T": {
+    "HOR_HS": 90,
+    "HOR_LK": 90,
+    "FARNEBACK": 15
+  },
+  "yolo_mean_auc": 0.06463333333333333,
+  "yolo_median_auc": 0.0498,
+  "yolo_best_clip": "DJI_0006_1",
+  "yolo_best_auc": 0.1472,
+  "n_clips_per_algo": {
+    "HOR_HS": 16,
+    "HOR_LK": 16,
+    "FARNEBACK": 7
+  }
+}

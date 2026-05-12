@@ -1,0 +1,89 @@
+# --- Secrets and credentials ---
+GitAccessToken.txt
+*.env
+.env.*
+credentials*
+secrets*
+
+# --- Raw data (provided by FIU researchers; not redistributable) ---
+data/
+
+# --- Large model checkpoints (only ship the CNN sea-mask refiner used in-pipeline) ---
+seg_refiner/checkpoints/best_v2.pt
+seg_refiner/checkpoints/final.pt
+seg_refiner/checkpoints/ripdetseg_binary_best.pt
+seg_refiner/checkpoints/ripdetseg_binary_final.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# --- Large intermediate heatmap arrays ---
+seg_refiner/results/saved_heatmaps/
+seg_refiner/results/sphere_broad_haulover/
+seg_refiner/results/sphere_plus_smooth/
+seg_refiner/results/markup_diag/
+seg_refiner/results/reproduce_haulover/
+seg_refiner/results/reproduce_haulover_v2/
+seg_refiner/results/final_haulover/
+*.npz
+
+# --- YOLOv8 large outputs ---
+ablation/results/yolov8/
+ablation/_video_id/
+
+# --- LaTeX build artifacts ---
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.run.xml
+
+# --- Duplicate PDF builds (keep only the final R2_clean + R2_tracked) ---
+plos_latex_template.pdf
+plos_latex_template_tracked.pdf
+plos_latex_template_R2_clean_v*.pdf
+plos_latex_template_R2_tracked_v*.pdf
+plos_latex_template_R2_*_v1_old.pdf
+
+# --- Generated tex from latexdiff ---
+plos_latex_template_tracked.tex
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# --- Local logs ---
+*.log
+ablation/*.log
+
+# --- Misc temporary files ---
+/tmp/
+tmp/
+.cache/
+*.tmp
+
+# --- WSL zone identifier files ---
+*:Zone.Identifier
+
+# --- Pre-2020 review letter PDFs that aren't part of the resubmission ---
+PLOS Rip Current Review Letter.pdf

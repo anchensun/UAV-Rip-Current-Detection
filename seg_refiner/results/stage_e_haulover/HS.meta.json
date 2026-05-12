@@ -1,0 +1,10 @@
+{
+  "video": "data/DJI_0009.MOV",
+  "algo": "HS",
+  "ripseg_ckpt": "seg_refiner/checkpoints/ripdetseg_binary_best.pt",
+  "prior_power": 1.0,
+  "prior_floor": 0.0,
+  "rip_only_auc_avg": 0.2545,
+  "n_pairs": 600,
+  "wall_seconds": 198.3
+}

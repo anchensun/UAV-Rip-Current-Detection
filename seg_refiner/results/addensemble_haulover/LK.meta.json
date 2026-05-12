@@ -1,0 +1,7 @@
+{
+  "algo": "LK",
+  "best_auc": 0.3025,
+  "best_T": 30,
+  "best_alpha_OF": 0.8,
+  "wall_seconds": 208.5
+}

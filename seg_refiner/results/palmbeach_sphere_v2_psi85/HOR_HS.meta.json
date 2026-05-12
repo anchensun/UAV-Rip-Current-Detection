@@ -1,0 +1,13 @@
+{
+  "video": "data/DJI_0011.MOV",
+  "mask": "script/Rip_Current-main/New_Rip_Mask/PalmBeach_mask.png",
+  "gt": "data/extracted/Rip Current Video/rip_curent_evaluation/workspace/annotations/PamlBeach_annotation.png",
+  "algo": "HOR_HS",
+  "ckpt": "/home/anchensun/Anchen/Research/plos_one_rip_current/seg_refiner/checkpoints/best.pt",
+  "gate_mode": "sea",
+  "projection": "sphere",
+  "altitude": 60.0,
+  "tilt_psi": 85.0,
+  "tilt_theta": 0.0,
+  "wall_seconds": 312.0
+}

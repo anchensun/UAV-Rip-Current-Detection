@@ -1,0 +1,20 @@
+{
+  "video": "data/extracted/Rip Current Video/New Drone Videos/DJI_0006_8.mp4",
+  "mask": "script/Rip_Current-main/New_Rip_Mask/DJI_0006_8_mask.png",
+  "gt": "data/extracted/Rip Current Video/RipOutlinesSBL/SBL_GT/DJI_0006_8.png",
+  "algo": "HOR_HS",
+  "thresholds": [
+    15,
+    30,
+    45,
+    60,
+    75,
+    90,
+    105,
+    120,
+    150
+  ],
+  "n_pairs": 600,
+  "wall_seconds": 169.6,
+  "of_seconds": 166.6
+}

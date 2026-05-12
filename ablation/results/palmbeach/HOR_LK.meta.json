@@ -1,0 +1,20 @@
+{
+  "video": "data/DJI_0047-002.MP4",
+  "mask": "script/Rip_Current-main/New_Rip_Mask/PalmBeach_mask.png",
+  "gt": "data/extracted/Rip Current Video/rip_curent_evaluation/workspace/annotations/PamlBeach_annotation.png",
+  "algo": "HOR_LK",
+  "thresholds": [
+    15,
+    30,
+    45,
+    60,
+    75,
+    90,
+    105,
+    120,
+    150
+  ],
+  "n_pairs": 600,
+  "wall_seconds": 118.9,
+  "of_seconds": 114.9
+}

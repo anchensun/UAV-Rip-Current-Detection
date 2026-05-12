@@ -1,0 +1,147 @@
+--- Research/Rip_Current/GenDemo.py	2026-01-24 20:53:33.000295951 -0800
++++ Research/plos_one_rip_current/script/Rip_Current-main/GenDemo.py	2026-05-03 21:25:12.873934032 -0700
+@@ -149,9 +149,11 @@
+                 if i > sec * rate:
+                     cap.release()
+                     out.release()
+-                    heat.astype(float)
+-                    heatint8 = np.int8(heat)
+-                    np.savez(vediolib + each_video_name + '_HeatSave', heatint8)
++                    # Bug fix (2026-05-03): was np.int8 — wrapped values > 127 to -128,
++                    # destroying recall in the most-rip pixels. Use float32 to preserve
++                    # the full accumulator range. See project_2020_code_audit.md.
++                    heat_save = heat.astype(np.float32)
++                    np.savez(vediolib + each_video_name + '_HeatSave', heat_save)
+                     break
+                 stop = time.time()
+                 seconds = (cost * 0.7 + (stop - start) * 0.3) * (length - i)
+--- Research/Rip_Current/OptOffShoreDirection.py	2026-01-24 20:52:53.663266326 -0800
++++ Research/plos_one_rip_current/script/Rip_Current-main/OptOffShoreDirection.py	2026-05-03 21:25:21.033762043 -0700
+@@ -256,11 +256,12 @@
+         
+         u, v, img = OffshoreDir(each_video_name, superresolution)
+         cv2.imwrite(videolib + each_video_name + '_OffShore_1by1.jpg', img)
+-        u.astype(float)
+-        uint8 = np.int8(u)
+-        v.astype(float)
+-        vint8 = np.int8(v)
+-        np.savez(videolib + each_video_name + '_OffShoreDir_1by1', uint8, vint8)
++        # Bug fix (2026-05-03): was np.int8 — distance-to-coast vectors easily exceed
++        # 127 px on a 1920x1080 frame, wrapping to wrong-sign offshore reference for
++        # far-from-coast pixels. Use float32. See project_2020_code_audit.md.
++        u_save = u.astype(np.float32)
++        v_save = v.astype(np.float32)
++        np.savez(videolib + each_video_name + '_OffShoreDir_1by1', u_save, v_save)
+      
+         end = time.time()
+         cost = end - start
+--- Research/Rip_Current/Optical_Flow_video.py	2026-01-24 20:54:01.458986172 -0800
++++ Research/plos_one_rip_current/script/Rip_Current-main/Optical_Flow_video.py	2026-05-03 21:25:49.661166634 -0700
+@@ -61,11 +61,11 @@
+                             u2 = x[1]
+                             print('No. ', count, ' frame has processed.')
+                             count = count + 1
+-                            u1.astype(float)
+-                            u1int8 = np.int8(u1)
+-                            u2.astype(float)
+-                            u2int8 = np.int8(u2)
+-                            np.savez(vediolib + 'result_of_frame' + str(count), u1int8, u2int8)
++                            # Bug fix (2026-05-03): np.int8 wraps |u| > 127 px/frame.
++                            # See project_2020_code_audit.md.
++                            u1_save = u1.astype(np.float32)
++                            u2_save = u2.astype(np.float32)
++                            np.savez(vediolib + 'result_of_frame' + str(count), u1_save, u2_save)
+                             addfile(vediolib + '/' + each_video_name + '_typhoon.zip',
+                                     vediolib + 'result_of_frame' + str(count) + '.npz')
+                             os.remove(vediolib + 'result_of_frame' + str(count) + '.npz')
+@@ -77,11 +77,10 @@
+                                 break
+                             print('No. ', count, ' frame has processed.')
+                             count = count + 1
+-                            u.astype(float)
+-                            uint8 = np.int8(u)
+-                            v.astype(float)
+-                            vint8 = np.int8(v)
+-                            np.savez(vediolib + 'result_of_frame' + str(count), uint8, vint8)
++                            # Bug fix (2026-05-03): np.int8 wraps |u| > 127 px/frame.
++                            u_save = u.astype(np.float32)
++                            v_save = v.astype(np.float32)
++                            np.savez(vediolib + 'result_of_frame' + str(count), u_save, v_save)
+                             addfile(vediolib + '/' + each_video_name + '_LK_highorder.zip',
+                                     vediolib + 'result_of_frame' + str(count) + '.npz')
+                             os.remove(vediolib + 'result_of_frame' + str(count) + '.npz')
+@@ -97,14 +96,10 @@
+                                 break
+                             print('No. ', count, ' frame has processed.')
+                             count = count + 1
+-                            # cv2.imshow('frame',frame)
+-
+-                            # finding the optical flow between two consecutive frames
+-                            u.astype(float)
+-                            uint8 = np.int8(u)
+-                            v.astype(float)
+-                            vint8 = np.int8(v)
+-                            np.savez(vediolib + 'result_of_frame' + str(count), uint8, vint8)
++                            # Bug fix (2026-05-03): np.int8 wraps |u| > 127 px/frame.
++                            u_save = u.astype(np.float32)
++                            v_save = v.astype(np.float32)
++                            np.savez(vediolib + 'result_of_frame' + str(count), u_save, v_save)
+                             addfile(vediolib + '/' + each_video_name + '_LK_firstorder.zip',
+                                     vediolib + 'result_of_frame' + str(count) + '.npz')
+                             os.remove(vediolib + 'result_of_frame' + str(count) + '.npz')
+@@ -127,14 +122,10 @@
+                                 break
+                             print('No. ', count, ' frame has processed.')
+                             count = count + 1
+-                            # cv2.imshow('frame',frame)
+-
+-                            # finding the optical flow between two consecutive frames
+-                            u.astype(float)
+-                            uint8 = np.int8(u)
+-                            v.astype(float)
+-                            vint8 = np.int8(v)
+-                            np.savez(vediolib + 'result_of_frame' + str(count), uint8, vint8)
++                            # Bug fix (2026-05-03): np.int8 wraps |u| > 127 px/frame.
++                            u_save = u.astype(np.float32)
++                            v_save = v.astype(np.float32)
++                            np.savez(vediolib + 'result_of_frame' + str(count), u_save, v_save)
+                             addfile(vediolib + '/' + each_video_name + '_HS_firstorder.zip',
+                                     vediolib + 'result_of_frame' + str(count) + '.npz')
+                             os.remove(vediolib + 'result_of_frame' + str(count) + '.npz')
+--- Research/Rip_Current/TyphoonThread.py	2026-01-24 20:48:00.354295580 -0800
++++ Research/plos_one_rip_current/script/Rip_Current-main/TyphoonThread.py	2026-05-03 21:26:40.420119224 -0700
+@@ -52,11 +52,10 @@
+                                 break
+                             print('No. ', count, ' frame has processed.')
+                             count = count + 1
+-                            u1.astype(float)
+-                            u1int8 = np.int8(u1)
+-                            u2.astype(float)
+-                            u2int8 = np.int8(u2)
+-                            np.savez(vediolib + 'result_of_frame' + str(count), u1int8, u2int8)
++                            # Bug fix (2026-05-03): np.int8 wraps |u| > 127 px/frame.
++                            u1_save = u1.astype(np.float32)
++                            u2_save = u2.astype(np.float32)
++                            np.savez(vediolib + 'result_of_frame' + str(count), u1_save, u2_save)
+                             addfile(vediolib + '/' + each_video_name + '_typhoon_result_typhoon_mode.zip',
+                                     vediolib + 'result_of_frame' + str(count) + '.npz')
+                             os.remove(vediolib + 'result_of_frame' + str(count) + '.npz')
+--- Research/Rip_Current/GenDemo_MultiCore.py	2026-01-24 20:54:10.549893547 -0800
++++ Research/plos_one_rip_current/script/Rip_Current-main/GenDemo_MultiCore.py	2026-05-03 21:26:48.907951133 -0700
+@@ -223,11 +223,11 @@
+ 
+                     flow_map = compute_flow_map(off_u_mix, off_v_mix)
+                     cv2.imwrite(vediolib + 'mixedoffdirflowmap.jpg', flow_map)
+-                    off_u_mix.astype(float)
+-                    uint8 = np.int8(off_u_mix)
+-                    off_v_mix.astype(float)
+-                    vint8 = np.int8(off_v_mix)
+-                    np.savez(vediolib + videoname + '_OffShoreDir_Mixed', uint8, vint8)
++                    # Bug fix (2026-05-03): was np.int8 — distance-to-coast vectors
++                    # easily exceed 127 px on a 1920x1080 frame.
++                    u_save = off_u_mix.astype(np.float32)
++                    v_save = off_v_mix.astype(np.float32)
++                    np.savez(vediolib + videoname + '_OffShoreDir_Mixed', u_save, v_save)
+ 
+                 for i in range(frame_num):
+                     heat_list.append(heat)
