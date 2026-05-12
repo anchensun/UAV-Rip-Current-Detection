@@ -31,30 +31,36 @@ seg_refiner/results/final_haulover/
 ablation/results/yolov8/
 ablation/_video_id/
 
-# --- LaTeX build artifacts ---
+# --- LaTeX / manuscript / paper sources (excluded from this repo by design) ---
+*.tex
+*.bib
+*.bst
+*.pdf
 *.aux
 *.bbl
 *.blg
 *.bcf
 *.fdb_latexmk
 *.fls
-*.log
-*.out
 *.synctex.gz
 *.toc
 *.lof
 *.lot
 *.run.xml
+*.out
 
-# --- Duplicate PDF builds (keep only the final R2_clean + R2_tracked) ---
-plos_latex_template.pdf
-plos_latex_template_tracked.pdf
-plos_latex_template_R2_clean_v*.pdf
-plos_latex_template_R2_tracked_v*.pdf
-plos_latex_template_R2_*_v1_old.pdf
+# --- Letters / manuscript edits / draft notes ---
+Cover_Letter*
+Response_to_Reviewers*
+manuscript_edits/
+letter_style.tex
+fix_tracked_swaps.py
 
-# --- Generated tex from latexdiff ---
-plos_latex_template_tracked.tex
+# --- Manuscript figures (only used in the paper; not part of code/model/scripts) ---
+figures/
+
+# --- Paper-related sub-README and per-table markdown ---
+seg_refiner/MASTER_TABLE.md
 
 # --- Python ---
 __pycache__/

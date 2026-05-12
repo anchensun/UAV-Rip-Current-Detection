@@ -1,109 +1,95 @@
 # UAV Rip Current Detection
 
-End-to-end pipeline for detecting rip currents from raw UAV (Unmanned Aerial Vehicle) video, combining CNN-based scene parsing, sphere-aware projection from image to ground coordinates with a tilt-aware Jacobian correction, dense optical-flow estimation with five algorithm variants, a per-pixel temporal accumulator gated by offshore-direction agreement, and a post-processing block of spatial Gaussian smoothing plus normalized cross-algorithm ensembling.
+Code, trained model, and result CSVs for an end-to-end UAV-video rip-current detection pipeline. The pipeline combines CNN-based scene parsing, sphere-aware projection from image to ground coordinates with a tilt-aware Jacobian correction, dense optical-flow estimation with five algorithm variants, a per-pixel temporal accumulator gated by offshore-direction agreement, and a post-processing block of spatial Gaussian smoothing plus normalized cross-algorithm ensembling.
 
-This repository accompanies the manuscript:
-
-> Anchen Sun et al. *Rip Current Detection in Nearshore Areas through UAV Video Analysis with Almost Local-Isometric Embedding Techniques on Sphere*. PLOS ONE (manuscript PONE-D-25-20427R1, R2 revision).
-
-**Headline results** (PR-AUC against expert consensus annotations):
-
-- **Palm Beach: 0.7067** — full pipeline (HOR HS + LK seg-gated ensemble at T=150°, σ=25)
-- **Haulover: 0.7040** — canonical HS+LK σ=25 ensemble mixed (w=0.4) with sphere-projected LK
-- **South Beach 1, segment 1: 0.6276** — cross-scene generalization under short-window protocol (10 s ending at reference frame, HS+LK ensemble, T=30°, σ=25)
-
-## Repository layout
+## Repository contents
 
 ```
-plos_latex_template.tex                 # Main manuscript (R2)
-plos_latex_template_r1_clean.tex        # R1 baseline (read-only archival)
-plos_latex_template_r1_diff_base.tex    # latexdiff input (placeholders aligned to R2)
-plos_latex_template_R2_clean.pdf        # Compiled clean manuscript
-plos_latex_template_R2_tracked.pdf      # latexdiff R1→R2 tracked-changes
-Cover_Letter.{md,pdf}                   # Editor cover letter
-Response_to_Reviewers.{md,pdf}          # Point-by-point response
-letter_style.tex                        # Shared pandoc/xelatex letter style
-fix_tracked_swaps.py                    # Post-processor for latexdiff output
+script/Rip_Current-main/        Patched 2020 reference pipeline
+  ├── OFlib.py                  Lucas-Kanade, Horn-Schunck, HOR variants
+  ├── Typhoonmode.py            Typhoon optical flow (numpy 2.x compatible)
+  ├── Compute_Heatmap.py        Per-pixel offshore-agreement accumulator
+  ├── Compute_AUC.py            Precision-recall AUC against GT
+  ├── GenDemo.py, *.py          Visualization + pipeline glue
+  └── New_Rip_Mask/*.png        Per-scene sea masks
 
-main.bib, plos2015.bst                  # Bibliography + PLOS bibstyle
+seg_refiner/                    Post-processing pipeline
+  ├── train_seg.py              CNN sea-mask refiner (U-Net, ResNet-18)
+  ├── train_ripdetseg_binary.py YOLOv8m-seg fine-tune on RipDetSeg
+  ├── sphere_projection.py      Sphere → ground Jacobian
+  ├── sphere_plus_smooth.py     Sphere ablation runner
+  ├── run_pipeline_with_seg.py        Seg-gated pipeline
+  ├── run_pipeline_with_seg_sphere.py +sphere projection
+  ├── run_pipeline_with_yolo.py YOLOv8 baseline runner
+  ├── run_pipeline_with_ripseg.py     RipDetSeg U-Net baseline
+  ├── enhance_canonical_smoothing.py  σ-smoothing on canonical heatmaps
+  ├── enhance_canonical_ensemble.py   Cross-algorithm normalized ensemble
+  ├── smooth_and_evaluate.py    σ sweep + AUC
+  ├── match_markup_frame.py     Annotator markup → reference-frame matcher
+  ├── eval_frame_bounded.py     Frame-aware AUC evaluation
+  ├── window_sweep_all_clips.py Window-length × start-position sweep
+  ├── analyze_dji0006_1.py      Camera-motion deep-dive
+  ├── checkpoints/best.pt       Trained CNN sea-mask refiner
+  └── results/*.csv             AUC tables, motion drift, window sweeps
 
-figures/                                # Manuscript figures (PNG/JPG/PDF)
-
-script/Rip_Current-main/                # Patched 2020 reference pipeline
-  ├── OFlib.py                          # Lucas-Kanade, Horn-Schunck, HOR variants
-  ├── Typhoonmode.py                    # Typhoon optical flow (patched for numpy 2.x)
-  ├── New_Rip_Mask/*_mask.png           # Per-scene sea masks
-  └── *.py                              # Original pipeline scripts (audited)
-
-seg_refiner/                            # R2 post-processing pipeline
-  ├── train_seg.py                      # CNN sea-mask refiner (U-Net, ResNet-18)
-  ├── train_ripdetseg_binary.py         # YOLOv8m-seg fine-tune on RipDetSeg
-  ├── sphere_projection.py              # Sphere → ground Jacobian
-  ├── sphere_plus_smooth.py             # Sphere ablation runner
-  ├── run_pipeline_with_seg.py          # Full seg-gated pipeline
-  ├── run_pipeline_with_seg_sphere.py   # +sphere
-  ├── enhance_canonical_smoothing.py    # Smoothing on canonical heatmaps
-  ├── enhance_canonical_ensemble.py     # Cross-algorithm ensemble
-  ├── smooth_and_evaluate.py            # σ sweep evaluation
-  ├── match_markup_frame.py             # SBL Markup → reference frame matcher
-  ├── eval_frame_bounded.py             # Frame-aware AUC eval
-  ├── window_sweep_all_clips.py         # Window-length × start-position sweep
-  ├── analyze_dji0006_1.py              # DJI_0006_1 deep-dive (motion + windows)
-  ├── checkpoints/best.pt               # Trained CNN sea-mask refiner (val IoU 0.728 sea, 0.736 land, 0.523 foam)
-  └── results/                          # CSVs of all R2 ablations and sweeps
-
-ablation/results/                       # Original ablation tables
-  ├── _consolidated.csv                 # Master comparison table
-  ├── DJI_*.csv                         # Per-clip per-T AUC sweeps
-  ├── sphere_sensitivity*.csv           # Planar vs sphere @ different altitudes
-  └── _head_to_head.csv                 # Framework vs YOLOv8m-seg on 6 clips
+ablation/results/               Original ablation tables
+  ├── _consolidated.csv         Master comparison table
+  ├── DJI_*.csv                 Per-clip per-T AUC sweeps
+  ├── sphere_sensitivity*.csv   Planar vs sphere @ different altitudes
+  └── _head_to_head.csv         Framework vs YOLOv8m-seg on 6 clips
 ```
 
-## Reproducing the headline results
+## Trained model
 
-Each result table in the manuscript ships with a runner script that reproduces it from the raw video files (provided separately by Florida International University; see Acknowledgments in the manuscript).
+`seg_refiner/checkpoints/best.pt` — U-Net (ResNet-18 encoder, ImageNet-initialized, 14.3 M parameters) trained on 215 + 22 frames at 1920 × 1080 with six-class scene-parsing labels (void / sky / sea / land / foam / structure). Validation IoU: 0.728 (sea), 0.736 (land), 0.523 (foam).
 
-| Manuscript table / claim | Reproducer |
-|---|---|
-| `tbl2` per-algorithm AUC at PB & HV | `script/Rip_Current-main/Compute_Heatmap.py` then `Compute_AUC.py` |
-| `tbl_seagate` PB AUC under seg gating | `seg_refiner/run_pipeline_with_seg.py` |
-| `tbl_pb_final` PB pipeline build-up | `seg_refiner/enhance_canonical_smoothing.py` |
-| `tbl_hv_final` HV pipeline build-up | `seg_refiner/sphere_plus_smooth.py` |
-| `tbl_sphere` sphere ablation | `seg_refiner/sphere_plus_smooth.py` with ψ sweep |
-| `tbl_short_window` cross-scene generalization | `seg_refiner/window_sweep_all_clips.py` |
-| YOLOv8 head-to-head | `seg_refiner/run_pipeline_with_yolo.py` |
+Loaded by every seg-gated pipeline runner via `torch.load(.../seg_refiner/checkpoints/best.pt)`.
 
-CSV outputs from each runner are in `seg_refiner/results/` and `ablation/results/`.
+## Data
 
-## What is *not* in this repository
+Raw UAV videos are **not included** in this repository. The DJI Phantom 3 Advanced captures (`DJI_0009.MOV` Haulover, `DJI_0011.MOV` Palm Beach, `DJI_0006_*.mp4` and `DJI_0007_*.mp4` South Beach 1 & 2) were provided by researchers at the Department of Earth & Environment, Florida International University, with permission for use in this study but without public redistribution rights. To obtain the videos, contact `asun@miami.edu`.
 
-- **Raw UAV videos** (the `data/` directory): the `DJI_0009.MOV` (Haulover), `DJI_0011.MOV` (Palm Beach), and the 16 `DJI_0006_*.mp4` / `DJI_0007_*.mp4` (South Beach) source files were provided by researchers from Florida International University with permission for use in this study but without rights for public redistribution. To obtain the videos, contact the corresponding author (`asun@miami.edu`).
-- **Large intermediate `.npz` heatmap arrays** and **YOLOv8m-seg + RipDetSeg checkpoints** (~1 GB total): omitted to keep the repository under GitHub's recommended size. The CSV summary tables that derive from them are included; the .npz arrays themselves will be deposited on Zenodo on manuscript acceptance.
+Per-scene sea masks (drawable from any frame) are included under `script/Rip_Current-main/New_Rip_Mask/`.
+
+## Headline results
+
+| Scene | Configuration | PR-AUC |
+|---|---|---|
+| Palm Beach | HOR HS + LK seg-gated ensemble, T=150°, σ=25 | **0.7067** |
+| Haulover | Canonical HS+LK σ=25 ensemble + sphere-projected LK (w=0.4) | **0.7040** |
+| South Beach 1, segment 1 | Late-10s window, HS+LK ensemble, T=30°, σ=25 | **0.6276** |
+
+CSV reproducers for each table:
+
+| Result | Reproducer | Output CSV |
+|---|---|---|
+| Per-algorithm AUC @ PB / HV | `script/Rip_Current-main/Compute_Heatmap.py` then `Compute_AUC.py` | `ablation/results/_consolidated.csv` |
+| PB AUC under CNN seg-gate | `seg_refiner/run_pipeline_with_seg.py` | `seg_refiner/results/seg_gated_palmbeach.csv` |
+| PB pipeline build-up | `seg_refiner/enhance_canonical_smoothing.py` | `seg_refiner/results/palmbeach_buildup.csv` |
+| HV pipeline build-up | `seg_refiner/sphere_plus_smooth.py` | `seg_refiner/results/haulover_buildup.csv` |
+| Sphere ψ ablation | `seg_refiner/sphere_plus_smooth.py` (ψ sweep) | `seg_refiner/results/sphere_haulover.csv` |
+| Cross-scene window sweep | `seg_refiner/window_sweep_all_clips.py` | `seg_refiner/results/window_sweep_all_clips.csv` |
+| Markup frame matches | `seg_refiner/match_markup_frame.py` | `seg_refiner/results/markup_frame_match.csv` |
+| Motion drift (DJI_0006_1) | `seg_refiner/analyze_dji0006_1.py` | `seg_refiner/results/dji0006_1_motion.csv` |
+| YOLOv8 head-to-head | `seg_refiner/run_pipeline_with_yolo.py` | `ablation/results/_head_to_head.csv` |
 
 ## Environment
 
-The pipeline is exercised in two Python environments:
+Two Python environments are exercised:
 
-- **`rip_current` (legacy)**: original 2020 numpy/scipy/cv2 pipeline, patched for numpy ≥ 2.0 compatibility.
-- **`base` / project-default**: PyTorch 2.x + `segmentation_models_pytorch` 0.5.x for the CNN sea-mask refiner and YOLOv8 baseline.
+- **`rip_current`** (legacy): the patched 2020 numpy/scipy/OpenCV pipeline. Compatible with NumPy ≥ 2.0 after the in-tree patches.
+- **`base` / project default**: PyTorch 2.x + `segmentation_models_pytorch` 0.5.x for the CNN sea-mask refiner and YOLOv8 baseline.
 
 Activation helper: `tools/activate_env.sh` (sets `LD_PRELOAD` for an Intel JIT stub on some Linux configs).
 
-## Citation
+Minimal dependency stack (Python 3.10+):
 
-```bibtex
-@article{sun2026ripcurrent,
-  title  = {Rip Current Detection in Nearshore Areas through UAV Video Analysis with Almost Local-Isometric Embedding Techniques on Sphere},
-  author = {Sun, Anchen and others},
-  journal = {PLOS ONE},
-  year   = {2026},
-  note   = {Manuscript PONE-D-25-20427R1, R2 revision}
-}
 ```
-
-## License
-
-Source code: MIT. Manuscript text and figures: © the authors, all rights reserved pending publication.
+numpy>=2.0  scipy  opencv-python  pillow
+torch>=2.5  torchvision  segmentation_models_pytorch
+ultralytics                         # YOLOv8 baseline
+pyimgcompactor  matplotlib
+```
 
 ## Contact
 
