@@ -93,3 +93,10 @@ tmp/
 
 # --- Pre-2020 review letter PDFs that aren't part of the resubmission ---
 PLOS Rip Current Review Letter.pdf
+
+# --- Claude Code session metadata ---
+.claude/
+
+# --- Stray load/error logs ---
+_ld.txt
+_ld_err.txt
