@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT / "seg_refiner"))
 from run_pipeline_with_seg import load_gt, compute_offshore, compute_auc_pr  # noqa: E402
 
 SIGMA = 25
-N_BINS = 2048   # matches smooth_and_evaluate.py (the script that produced 0.7067)
+N_BINS = 2048   # matches smooth_and_evaluate.py's threshold grid
 
 
 def main():

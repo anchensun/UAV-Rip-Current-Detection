@@ -54,12 +54,24 @@ Loaded by every seg-gated pipeline runner via `torch.load(.../seg_refiner/checkp
 mistaken for inconsistencies with the paper.** (1) The stored `num_classes` is **8**, not 6.
 Labels are 3-bit BGR-encoded, so the tensor has eight channels, of which codes 3 and 7 are
 never used (see the comment at `seg_refiner/train_seg.py:158`); the task is six-class, as
-the paper says. (2) The checkpoint's stored `iou` field is the **patch-level** validation
-metric used only to select the best epoch. The IoU values quoted in the paper
-(0.728 sea, 0.736 land, 0.523 foam) are **full-frame** IoU under the majority-vote patch
-inference protocol on the same split, so they are computed differently and do not match the
-stored array. Both are in-sample, for the reason given above; the generalization numbers are
-the test-time transfer IoUs (0.484 Palm Beach, 0.575 Haulover).
+the paper says. (2) The checkpoint's stored `iou` field, and the per-epoch IoUs in
+`seg_refiner/_train_log.txt`, are **patch-level** metrics used only to select the best epoch.
+They do **not** match the paper's numbers, and the gap looks alarming for the foam class in
+particular: every training epoch logs `foam=0.000`, while the paper reports foam IoU 0.523.
+This is a protocol difference, not an inconsistency, and it is checkable — evaluating
+`best.pt` on the same 22-frame split at **full frame** (native 1920x1080, single forward
+pass, argmax) reproduces the paper exactly:
+
+| class | full-frame IoU | full-frame F1 | paper |
+|---|---|---|---|
+| sea | 0.7283 | 0.8428 | 0.728 / 0.843 |
+| land | 0.7364 | 0.8482 | 0.736 |
+| foam | 0.5230 | 0.6868 | 0.523 |
+
+Foam occupies only 0.23% of validation pixels, so on 512x512 random crops it is essentially
+never the argmax; given the whole frame the model recovers it. Both figures are in-sample,
+for the reason given above; the generalization numbers are the test-time transfer IoUs
+(0.484 Palm Beach, 0.575 Haulover).
 
 ## Data
 
@@ -77,7 +89,7 @@ The paper reports **two operating points**, and leads with the untuned one.
 |---|---|---|---|
 | Palm Beach | **neutral default** (headline) | HOR HS + LK seg-gated ensemble, **T=90°**, σ=25 | **0.636** |
 | Haulover | **neutral default** (headline) | Canonical HS+LK σ=25 ensemble + sea-mask (natively T=90°) | **0.660** |
-| Palm Beach | per-scene-selected (upper bound) | same recipe, T=150° | 0.7067 |
+| Palm Beach | per-scene-selected (upper bound) | same recipe, T=150° | 0.7066 |
 | Haulover | per-scene-selected (upper bound) | + sphere-projected LK term at T=15°, w=0.4, ψ=60° | 0.7040 |
 | South Beach 1, segment 1 | per-scene-selected | Late-10s window, HS+LK ensemble, T=30°, σ=25 | 0.6276 |
 

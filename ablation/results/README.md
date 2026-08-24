@@ -46,8 +46,8 @@ direction.
 tolerances** (e.g. 0.0473 vs 0.0428 at `T = 90°`). That is not evidence that the offshore
 direction is backwards. Both runs sit at PR-AUC ≈ 0.04–0.05, which is the chance level for
 this sub-clip — annotated rip pixels cover only 1.6–9.6% of frame pixels on the South Beach
-sub-clips, and a random scorer achieves the prevalence. The two curves are separated by less
-than 0.005 AUC throughout, i.e. by noise at chance level.
+sub-clips, and a random scorer achieves the prevalence. The two curves never differ by more than
+0.0066 AUC at any tolerance, i.e. they are separated by noise at chance level.
 
 The honest conclusion, which the paper states, is that the South Beach sub-clips carry too
 little rip signal to discriminate between direction hypotheses at all. The evidence that the
