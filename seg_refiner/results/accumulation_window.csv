@@ -1,0 +1,25 @@
+scene,algo,n_pairs,sec,AUC
+Palm Beach,HOR_HS,1,0.03,0.206
+Palm Beach,HOR_HS,30,1.0,0.4334
+Palm Beach,HOR_HS,90,3.0,0.4372
+Palm Beach,HOR_HS,150,5.0,0.4076
+Palm Beach,HOR_HS,300,10.01,0.4164
+Palm Beach,HOR_HS,600,20.02,0.3686
+Palm Beach,LK,1,0.03,0.2621
+Palm Beach,LK,30,1.0,0.4523
+Palm Beach,LK,90,3.0,0.4905
+Palm Beach,LK,150,5.0,0.5043
+Palm Beach,LK,300,10.01,0.496
+Palm Beach,LK,600,20.02,0.4918
+Haulover,HOR_HS,1,0.03,0.091
+Haulover,HOR_HS,30,1.0,0.2006
+Haulover,HOR_HS,90,3.0,0.2052
+Haulover,HOR_HS,150,5.0,0.2048
+Haulover,HOR_HS,300,10.01,0.1821
+Haulover,HOR_HS,600,20.02,0.176
+Haulover,LK,1,0.03,0.121
+Haulover,LK,30,1.0,0.2108
+Haulover,LK,90,3.0,0.2361
+Haulover,LK,150,5.0,0.2346
+Haulover,LK,300,10.01,0.2218
+Haulover,LK,600,20.02,0.221

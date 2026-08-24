@@ -1,0 +1,10 @@
+{
+  "video": "data/DJI_0011.MOV",
+  "mask": "script/Rip_Current-main/New_Rip_Mask/PalmBeach_mask.png",
+  "gt": "data/extracted/Rip Current Video/rip_curent_evaluation/workspace/annotations/PamlBeach_annotation.png",
+  "algo": "HOR_HS",
+  "ckpt": "seg_refiner/checkpoints/random_matched.pt",
+  "gate_mode": "sea",
+  "n_pairs": 600,
+  "wall_seconds": 311.3
+}

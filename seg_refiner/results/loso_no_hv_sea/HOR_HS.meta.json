@@ -1,0 +1,10 @@
+{
+  "video": "data/DJI_0009.MOV",
+  "mask": "script/Rip_Current-main/New_Rip_Mask/Haulover_Miami_FL_mask.png",
+  "gt": "script/Rip_Current-main/rip_curent_evaluation/workspace/annotations/Haulover_Miami_FL_annotation.png",
+  "algo": "HOR_HS",
+  "ckpt": "seg_refiner/checkpoints/loso_no_hv.pt",
+  "gate_mode": "sea",
+  "n_pairs": 600,
+  "wall_seconds": 422.2
+}

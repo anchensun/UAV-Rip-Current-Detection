@@ -46,10 +46,12 @@ def encode_label(gt_bgr: np.ndarray) -> np.ndarray:
 
 
 class SceneDataset(Dataset):
-    def __init__(self, split: str, crop: int = 512, augment: bool = True):
+    def __init__(self, split: str, crop: int = 512, augment: bool = True,
+                 drop: set[str] | None = None):
         self.img_dir = TR / split / "img" / "0"
         self.gt_dir  = TR / split / "gt"  / "0"
-        self.files = sorted(p.name for p in self.img_dir.glob("*.png"))
+        drop = drop or set()
+        self.files = sorted(p.name for p in self.img_dir.glob("*.png") if p.name not in drop)
         self.crop = crop
         self.augment = augment
 
@@ -101,11 +103,30 @@ def main():
     ap.add_argument("--encoder", default="resnet18")
     ap.add_argument("--num-classes", type=int, default=8,
                     help="Use 8 to cover all BGR-bit codes including unused 3,7.")
+    ap.add_argument("--out-name", default="best.pt",
+                    help="Checkpoint filename under seg_refiner/checkpoints/.")
+    ap.add_argument("--log-name", default="_train_log.txt")
+    ap.add_argument("--exclude-csv", type=Path, default=None,
+                    help="CSV with columns frame,best_test used to drop frames "
+                         "resembling a held-out evaluation scene (leakage-free retrain).")
+    ap.add_argument("--exclude-scene", default=None,
+                    help="Value of best_test to drop (e.g. PalmBeach or Haulover).")
+    ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
+
+    torch.manual_seed(args.seed); np.random.seed(args.seed)
+
+    drop: set[str] = set()
+    if args.exclude_csv and args.exclude_scene:
+        import csv as _csv
+        with args.exclude_csv.open() as fh:
+            for r in _csv.DictReader(fh):
+                if r.get("best_test") == args.exclude_scene:
+                    drop.add(r["frame"])
 
     out_dir = ROOT / "seg_refiner" / "checkpoints"
     out_dir.mkdir(parents=True, exist_ok=True)
-    log_file = ROOT / "seg_refiner" / "_train_log.txt"
+    log_file = ROOT / "seg_refiner" / args.log_name
     log = log_file.open("w")
 
     def L(s):
@@ -113,9 +134,12 @@ def main():
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     L(f"device: {device}, torch {torch.__version__}, smp {smp.__version__}")
+    if drop:
+        L(f"EXCLUDING {len(drop)} frames resembling '{args.exclude_scene}' "
+          f"(from {args.exclude_csv.name})")
 
-    train_ds = SceneDataset("train", crop=args.crop, augment=True)
-    val_ds   = SceneDataset("val",   crop=args.crop, augment=False)
+    train_ds = SceneDataset("train", crop=args.crop, augment=True, drop=drop)
+    val_ds   = SceneDataset("val",   crop=args.crop, augment=False, drop=drop)
     L(f"train {len(train_ds)} frames, val {len(val_ds)} frames, crop={args.crop}")
 
     train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True,
@@ -186,18 +210,13 @@ def main():
                         "encoder": args.encoder,
                         "num_classes": args.num_classes,
                         "epoch": epoch + 1,
-                        "iou": iou.tolist()},
-                       out_dir / "best.pt")
-            L(f"  -> saved checkpoints/best.pt (val sea IoU = {best_val_iou_sea:.4f})")
+                        "iou": iou.tolist(),
+                        "excluded_scene": args.exclude_scene,
+                        "n_excluded": len(drop)},
+                       out_dir / args.out_name)
+            L(f"  -> saved checkpoints/{args.out_name} (val sea IoU = {best_val_iou_sea:.4f})")
 
-    # Save final
-    torch.save({"model_state_dict": model.state_dict(),
-                "encoder": args.encoder,
-                "num_classes": args.num_classes,
-                "epoch": args.epochs,
-                "iou": iou.tolist()},
-               out_dir / "final.pt")
-    L(f"DONE. best val sea IoU = {best_val_iou_sea:.4f}; saved final.pt and best.pt")
+    L(f"DONE. best val sea IoU = {best_val_iou_sea:.4f}; saved {args.out_name}")
     log.close()
 
 

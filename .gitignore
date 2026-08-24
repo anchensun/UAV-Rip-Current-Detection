@@ -94,6 +94,20 @@ tmp/
 # --- Pre-2020 review letter PDFs that aren't part of the resubmission ---
 PLOS Rip Current Review Letter.pdf
 
+# --- Internal revision planning / working notes (NOT for publication) ---
+# These contain candid reviewer-strategy language and must never be pushed to
+# the public repository that the manuscript cites.
+REVISION_PLAN_R3.md
+REVISION_R3_FINDINGS.md
+.r3_backup_*/
+
+# --- Submission-only artifacts (figure TIFFs, Editorial Manager text) ---
+submission_R3/
+
+# --- LaTeX tracked-changes helper (companion to fix_tracked_swaps.py) ---
+fix_tracked_tables.py
+fix_tracked_wide_tables.py
+
 # --- Claude Code session metadata ---
 .claude/
 
