@@ -1,3 +1,9 @@
+# This file is adapted from the high-order regularization module of PyTyphoon
+# (lib/highorder.py, https://github.com/pderian/PyTyphoon), written by Pierre Derian, and is
+# distributed under the GNU General Public License v3.0 (see LICENSES/GPL-3.0.txt at the
+# repository root). It is NOT covered by the MIT License of this repository.
+# Modified by the authors of this repository: connection_coefficients and the convolution-based
+# HighOrderRegularizerConv only (used by OFlib.higher_order), with changes.
 import numpy as np
 import pywt
 import scipy.ndimage as ndimage

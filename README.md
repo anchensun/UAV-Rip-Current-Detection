@@ -4,7 +4,7 @@ Code for the article
 
 > Yang K, Leatherman SB, Sun A. Rip current detection in nearshore areas through UAV video analysis using optical flow and almost local-isometric embedding techniques on the sphere. *PLOS One*. 2026;21(10):e0360672. https://doi.org/10.1371/journal.pone.0360672
 
-The release tagged `plos-one-v1.0` is the version of the code that accompanies the published article. If you use this code, please cite the article (see also `CITATION.cff`):
+The release tagged `plos-one-v1.0.1` is the version of the code that accompanies the published article. It differs from `plos-one-v1.0` only by the license files and the license notices in four third-party files (see [License](#license)). If you use this code, please cite the article (see also `CITATION.cff`):
 
 ```bibtex
 @article{yang2026rip,
@@ -197,6 +197,22 @@ sympy  pyoptflow                    # used by the 2020 reference pipeline
 torch>=2.5  torchvision  segmentation_models_pytorch
 ultralytics                         # YOLOv8 baseline only
 ```
+
+## License
+
+The source code written for this repository is released under the [MIT License](LICENSE).
+
+Four files in `script/Rip_Current-main/` are adapted from third-party projects and keep their original licenses. The header of each file says so and lists what was changed.
+
+| File | Adapted from | License |
+|---|---|---|
+| `Typhoonmode.py`, `Typhoonmode_thread.py` | [PyTyphoon](https://github.com/pderian/PyTyphoon) by P. Dérian | GPL-3.0 ([`LICENSES/GPL-3.0.txt`](LICENSES/GPL-3.0.txt)) |
+| `HighOrder.py` | PyTyphoon, `lib/highorder.py` | GPL-3.0 ([`LICENSES/GPL-3.0.txt`](LICENSES/GPL-3.0.txt)) |
+| `HornSchunck.py` | [pyoptflow](https://github.com/scivision/pyoptflow) | Apache-2.0 ([`LICENSES/Apache-2.0.txt`](LICENSES/Apache-2.0.txt)) |
+
+`OFlib.py` imports `HighOrder.py`, so every script that imports `OFlib` uses GPL-3.0 code; this includes the pipeline runners behind the article's results. If you distribute such a script together with these modules, the combined program is subject to GPL-3.0. Each MIT-licensed file can still be reused on its own under the MIT License.
+
+The MIT License covers source code only. It does not cover the data files in this repository: the images (sea masks, expert annotation masks, audit montages and other figures), the trained checkpoints, and the result tables. The expert annotations were produced by Dr. S. B. Leatherman's group, and the audit montages are reduced-resolution views of captures held by FIU (see [Data](#data)). Reuse terms for these files will be those of the archival data deposit; until then, contact the authors.
 
 ## Contact
 

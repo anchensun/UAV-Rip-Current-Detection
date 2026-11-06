@@ -1,3 +1,8 @@
+# This file is adapted from HornSchunck in pyoptflow (https://github.com/scivision/pyoptflow)
+# and is distributed under the Apache License, Version 2.0 (see LICENSES/Apache-2.0.txt at the
+# repository root). It is NOT covered by the MIT License of this repository.
+# Modified by the authors of this repository: function renamed to HS, positional iteration
+# argument NumOfIter, and an empty result returned when the input cannot be cast to float32.
 from scipy.ndimage.filters import convolve as filter2
 import numpy as np
 from typing import Tuple

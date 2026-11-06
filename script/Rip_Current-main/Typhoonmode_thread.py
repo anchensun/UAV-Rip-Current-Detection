@@ -1,3 +1,10 @@
+# This file is adapted from PyTyphoon (https://github.com/pderian/PyTyphoon), written by
+# Pierre Derian (2018), and is distributed under the GNU General Public License v3.0
+# (see LICENSES/GPL-3.0.txt at the repository root). It is NOT covered by the MIT License
+# of this repository.
+# Modified by the authors of this repository: the L-BFGS-B solver settings (factr, epsilon,
+# maxfun, maxiter) are exposed through Typhoon.solve_pyramid, which takes the image pair as
+# one argument and returns only the flow field, for use with multiprocessing.Pool.map.
 """Python implementation of the Typhoon algorithm solving dense 2D optical flow problems.
 Description: This module provides pure Python implementation of Typhoon.  At the moment,
     only the data term [1] is provided. The high-order regularizers [2] are not implemented
