@@ -1,5 +1,24 @@
 # UAV Rip Current Detection
 
+Code for the article
+
+> Yang K, Leatherman SB, Sun A. Rip current detection in nearshore areas through UAV video analysis using optical flow and almost local-isometric embedding techniques on the sphere. *PLOS One*. 2026;21(10):e0360672. https://doi.org/10.1371/journal.pone.0360672
+
+The release tagged `plos-one-v1.0` is the version of the code that accompanies the published article. If you use this code, please cite the article (see also `CITATION.cff`):
+
+```bibtex
+@article{yang2026rip,
+  author  = {Yang, Kaiqi and Leatherman, Stephen B. and Sun, Anchen},
+  title   = {Rip current detection in nearshore areas through {UAV} video analysis using optical flow and almost local-isometric embedding techniques on the sphere},
+  journal = {PLOS One},
+  year    = {2026},
+  volume  = {21},
+  number  = {10},
+  pages   = {e0360672},
+  doi     = {10.1371/journal.pone.0360672}
+}
+```
+
 Code, trained model, and result CSVs for an end-to-end UAV-video rip-current detection pipeline. The pipeline combines CNN-based scene parsing, sphere-aware projection from image to ground coordinates with a tilt-aware Jacobian correction, dense optical-flow estimation with five algorithm variants, a per-pixel temporal accumulator gated by offshore-direction agreement, and a post-processing block of spatial Gaussian smoothing plus normalized cross-algorithm ensembling.
 
 ## Repository contents
@@ -75,7 +94,7 @@ for the reason given above; the generalization numbers are the test-time transfe
 
 ## Data
 
-Raw UAV videos are **not included** in this repository. The DJI Phantom 3 Advanced captures (`DJI_0009.MOV` Haulover, `DJI_0011.MOV` Palm Beach, `DJI_0006_*.mp4` and `DJI_0007_*.mp4` South Beach 1 & 2) were collected by the Department of Earth & Environment, Florida International University (the affiliation of co-author S. B. Leatherman, who provided them for this study) and are currently held without public-redistribution rights. They will be deposited alongside the derived data in the archival Zenodo repository once the institutional release completes; until then, access requests are handled through the Department of Earth & Environment, Florida International University.
+Raw UAV videos are **not included** in this repository. The DJI Phantom 3 Advanced captures (`DJI_0009.MOV` Haulover, `DJI_0011.MOV` Palm Beach, `DJI_0006_*.mp4` and `DJI_0007_*.mp4` South Beach 1 & 2) were collected by the Department of Earth & Environment, Florida International University (the affiliation of co-author S. B. Leatherman, who provided them for this study) and are currently held without public-redistribution rights. They will be deposited alongside the derived data in the archival Zenodo repository once the institutional release completes; until then, access requests should be sent to co-author Dr. Stephen B. Leatherman (Department of Earth and Environment, Florida International University; sbleathe@fiu.edu), who holds the data. Requests are answered on the same terms for any qualified researcher.
 
 The training-only captures -- **Ocean Reef Park** (the capture the paper identifies as a principal source of the CNN scene-parsing frames, ~131 m from the Palm Beach evaluation site) and the South Beach captures -- are likewise not included, on the same terms. The 215 scene-parsing training frames themselves are image data and ship with the archival deposit, not this repository.
 
@@ -201,5 +220,5 @@ Scripts and outputs added for the third round of revision.
 | **Planar-vs-sphere error over altitude** (Table 9) | `ablation/sphere_projection_sensitivity.py` | `ablation/results/sphere_altitude_bound.csv`, `ablation/results/sphere_altitude/` |
 | — Smoothing sensitivity of the headline recipe | `seg_refiner/smooth_and_evaluate.py` | `results/sigma_sweep_headline.csv` |
 
-An archival Zenodo deposit carrying this repository plus all redistributable derived data will be minted on
-acceptance and cited in the paper.
+An archival Zenodo deposit carrying this repository plus all redistributable derived data is in preparation;
+its DOI will be added here once it is minted.
